@@ -14,4 +14,6 @@ urlpatterns = [
     path("talaba/<int:pk>/statistika/", views.student_stats, name="student_stats"),
     path("talaba/<int:pk>/tahrirlash/", views.student_update, name="student_update"),
     path("talaba/<int:pk>/ochirish/", views.student_delete, name="student_delete"),
+    path("register/", views.register, name="register"),
+    path("profile/", views.profile, name="profile"),
 ]

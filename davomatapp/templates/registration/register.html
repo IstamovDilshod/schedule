@@ -1,0 +1,26 @@
+{% extends "davomatapp/base.html" %}
+{% block title %}Ro'yxatdan o'tish{% endblock %}
+{% block content %}
+<style>
+  .auth-card { max-width:430px; margin:56px auto; text-align:center; padding:34px 30px; }
+  .auth-ico { width:64px; height:64px; margin:0 auto 14px; border-radius:20px; display:grid; place-items:center; font-size:34px;
+              color:#fff; background:linear-gradient(135deg,#818cf8,#4f46e5); box-shadow:0 12px 28px rgba(79,70,229,.35); }
+  .auth-card form { text-align:left; margin-top:20px; }
+  .auth-card input[type=text], .auth-card input[type=email], .auth-card input[type=password] { max-width:none; }
+  .auth-card .btn { width:100%; justify-content:center; padding:11px; }
+  .auth-card .helptext, .auth-card ul { font-size:12px; opacity:.75; }
+  .auth-switch { margin-top:18px; font-size:14px; }
+  .auth-switch a { color:#4f46e5; font-weight:600; text-decoration:none; }
+  .auth-switch a:hover { text-decoration:underline; }
+</style>
+<div class="card auth-card">
+  <div class="auth-ico"><iconify-icon icon="solar:user-plus-bold-duotone"></iconify-icon></div>
+  <h1>Ro'yxatdan o'tish</h1>
+  <p class="muted">Yangi akkaunt yarating va davomat tizimidan foydalaning.</p>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit"><iconify-icon icon="solar:user-plus-bold-duotone"></iconify-icon> Ro'yxatdan o'tish</button>
+  </form>
+  <p class="muted auth-switch">Akkauntingiz bormi? <a href="{% url 'login' %}">Kirish</a></p>
+</div>
+{% endblock %}

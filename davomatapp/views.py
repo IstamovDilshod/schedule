@@ -2,7 +2,9 @@ import calendar
 import csv
 from datetime import date, datetime
 
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.http import HttpResponse, JsonResponse
@@ -11,7 +13,15 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .forms import GroupForm, ImportForm, StudentEditForm, StudentForm
+from .forms import (
+    GroupForm,
+    ImportForm,
+    ProfilePasswordForm,
+    RegisterForm,
+    StudentEditForm,
+    StudentForm,
+    UsernameForm,
+)
 from .models import Attendance, Group, Student
 
 OYLAR = [
@@ -46,6 +56,50 @@ def _parse_month(value):
 def _shift_month(year, month, delta):
     index = year * 12 + (month - 1) + delta
     return index // 12, index % 12 + 1
+
+
+# ------------------------------------------------------- Akkaunt (kirish)
+def register(request):
+    """Yangi foydalanuvchini ro'yxatdan o'tkazish."""
+    if request.user.is_authenticated:
+        return redirect(settings.LOGIN_REDIRECT_URL)
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect(settings.LOGIN_REDIRECT_URL)
+    else:
+        form = RegisterForm()
+    return render(request, "registration/register.html", {"form": form})
+
+
+@login_required
+def profile(request):
+    """Foydalanuvchi o'z login va parolini yangilaydi."""
+    user_form = UsernameForm(instance=request.user)
+    pass_form = ProfilePasswordForm(request.user)
+
+    if request.method == "POST":
+        if "save_username" in request.POST:
+            user_form = UsernameForm(request.POST, instance=request.user)
+            if user_form.is_valid():
+                user_form.save()
+                messages.success(request, "Login yangilandi.")
+                return redirect("profile")
+        elif "save_password" in request.POST:
+            pass_form = ProfilePasswordForm(request.user, request.POST)
+            if pass_form.is_valid():
+                user = pass_form.save()
+                update_session_auth_hash(request, user)  # sessiya uzilmasin
+                messages.success(request, "Parol yangilandi.")
+                return redirect("profile")
+
+    return render(
+        request,
+        "registration/profile.html",
+        {"user_form": user_form, "pass_form": pass_form},
+    )
 
 
 # ---------------------------------------------------------------- Bosh sahifa

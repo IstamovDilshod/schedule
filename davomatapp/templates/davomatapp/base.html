@@ -23,7 +23,44 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"></noscript>
 
 <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js" defer></script>
+<style>
+  .pw-wrap { position:relative; display:block; }
+  .pw-wrap input { width:100%; padding-right:44px !important; box-sizing:border-box; }
+  .pw-eye {
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    background:none; border:0; padding:4px; cursor:pointer;
+    font-size:20px; line-height:1; color:inherit; opacity:.55;
+    display:grid; place-items:center;
+  }
+  .pw-eye:hover { opacity:1; }
+</style>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('input[type="password"]').forEach(function (input) {
+      var wrap = document.createElement("span");
+      wrap.className = "pw-wrap";
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pw-eye";
+      btn.setAttribute("aria-label", "Parolni ko'rsatish");
+      btn.innerHTML = '<iconify-icon icon="solar:eye-closed-bold-duotone"></iconify-icon>';
+      wrap.appendChild(btn);
+
+      btn.addEventListener("click", function () {
+        var show = input.type === "password";
+        input.type = show ? "text" : "password";
+        btn.innerHTML = '<iconify-icon icon="' +
+          (show ? "solar:eye-bold-duotone" : "solar:eye-closed-bold-duotone") +
+          '"></iconify-icon>';
+        btn.setAttribute("aria-label", show ? "Parolni yashirish" : "Parolni ko'rsatish");
+      });
+    });
+  });
+</script>
 <style>
   :root {
     --bg:#f4f5fb; --surface:#ffffff; --surface-2:#f8f9fd; --text:#0b1020; --muted:#64748b;

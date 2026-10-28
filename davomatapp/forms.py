@@ -79,3 +79,25 @@ class UserEditForm(forms.ModelForm):
         if lock:  # o'zini bloklab qo'yishdan saqlash
             self.fields["is_active"].disabled = True
             self.fields["is_staff"].disabled = True
+
+
+from django import forms
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
+from django.contrib.auth.models import User
+
+
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("username", "email")
+
+
+class UsernameForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username", "email")
+        labels = {"username": "Login", "email": "Email"}
+
+
+class ProfilePasswordForm(PasswordChangeForm):
+    pass
